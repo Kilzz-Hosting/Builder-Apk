@@ -1,1 +1,0 @@
-umpan doang
