@@ -13,15 +13,16 @@ workflows:
           npx cap add android
       - name: Set minSdkVersion 21 (Android 5.0+)
         script: |
-          sed -i 's/minSdkVersion=[0-9]*/minSdkVersion=21/' android/variables.gradle
+          sed -i.bak 's/minSdkVersion=[0-9]*/minSdkVersion=21/' android/variables.gradle
+          rm -f android/variables.gradle.bak
       - name: Generate icon & splash from logo
         script: npx capacitor-assets generate --android
       - name: Sync Capacitor
         script: npx cap sync android
       - name: Rename app label to KilzzTemp
         script: |
-          sed -i 's/<string name="app_name">.*<\/string>/<string name="app_name">KilzzTemp<\/string>/' android/app/src/main/res/values/strings.xml
-          sed -i 's/<string name="title_activity_main">.*<\/string>/<string name="title_activity_main">KilzzTemp<\/string>/' android/app/src/main/res/values/strings.xml
+          sed -i.bak 's/<string name="app_name">.*<\/string>/<string name="app_name">KilzzTemp<\/string>/' android/app/src/main/res/values/strings.xml
+          sed -i.bak 's/<string name="title_activity_main">.*<\/string>/<string name="title_activity_main">KilzzTemp<\/string>/' android/app/src/main/res/values/strings.xml
       - name: Build debug APK
         script: |
           cd android
