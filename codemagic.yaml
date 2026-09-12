@@ -1,0 +1,32 @@
+workflows:
+  kilzztemp-android:
+    name: KilzzTemp Android Build
+    max_build_duration: 30
+    instance_type: linux_x2
+    environment:
+      node: 20
+      java: 17
+    scripts:
+      - name: Install dependencies
+        script: npm install
+      - name: Add Android platform
+        script: |
+          npx cap add android
+      - name: Set minSdkVersion 21 (Android 5.0+)
+        script: |
+          sed -i 's/minSdkVersion=[0-9]*/minSdkVersion=21/' android/variables.gradle
+      - name: Generate icon & splash from logo
+        script: npx capacitor-assets generate --android
+      - name: Sync Capacitor
+        script: npx cap sync android
+      - name: Rename app label to KilzzTemp
+        script: |
+          sed -i 's/<string name="app_name">.*<\/string>/<string name="app_name">KilzzTemp<\/string>/' android/app/src/main/res/values/strings.xml
+          sed -i 's/<string name="title_activity_main">.*<\/string>/<string name="title_activity_main">KilzzTemp<\/string>/' android/app/src/main/res/values/strings.xml
+      - name: Build debug APK
+        script: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/apk/debug/app-debug.apk
